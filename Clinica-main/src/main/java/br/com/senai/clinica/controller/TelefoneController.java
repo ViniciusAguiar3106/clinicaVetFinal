@@ -25,7 +25,7 @@ public class TelefoneController {
   private TelefoneRepository repository;
 
   @PostMapping
-  public Telefone cadastrarTelefone(@Valid @RequestBody Telefone telefone) {
+  public Response cadastrarTelefone(@Valid @RequestBody Telefone telefone) {
     repository.save(telefone);
     return new Response(201, "Telefone cadastrado com sucesso!");
   }
