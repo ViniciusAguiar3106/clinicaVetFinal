@@ -29,6 +29,7 @@ public class EnderecoController {
   public Response cadastrarEndereco(@Valid @RequestBody Endereco endereco) {
     repository.save(endereco);
     return new Response(201, "Endereço cadastrado com sucesso!");
+
   }
 
   @GetMapping

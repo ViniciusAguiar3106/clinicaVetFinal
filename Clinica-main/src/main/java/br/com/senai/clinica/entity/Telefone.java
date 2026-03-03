@@ -24,17 +24,16 @@ public class Telefone {
     @JoinColumn(name = "fk_dono")
     private Dono dono;
 
-    public Telefone(Long id, String numero) {
-        this.id = id;
-        this.numero = numero;
-    }
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getNumero() {
+        return numero;
     }
 
     public void setNumero(String numero) {
@@ -48,4 +47,5 @@ public class Telefone {
     public void setDono(Dono dono) {
         this.dono = dono;
     }
+
 }

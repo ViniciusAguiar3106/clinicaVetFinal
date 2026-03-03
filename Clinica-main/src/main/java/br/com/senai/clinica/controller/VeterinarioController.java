@@ -27,8 +27,16 @@ public class VeterinarioController {
 
   @PostMapping
   public Response cadastrarVeterinario(@Valid @RequestBody Veterinario veterinario) {
+    boolean crmvJaExiste = repository.existsByCrmv(veterinario.getCrmv());
+
+    if (crmvJaExiste) {
+      return new Response(409, "Já existe um Veterinario(a) com esse CRMV!");
+
+    }
+
     repository.save(veterinario);
     return new Response(201, "Veterinario(a) cadastrado com sucesso!");
+
   }
 
   @GetMapping
@@ -77,4 +85,5 @@ public class VeterinarioController {
 
     return new Response(204, "Veterinário deletado com sucesso");
   }
+
 }
