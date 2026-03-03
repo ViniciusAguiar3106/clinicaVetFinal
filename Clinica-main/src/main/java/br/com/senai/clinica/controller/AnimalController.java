@@ -16,7 +16,6 @@ import br.com.senai.clinica.entity.Animal;
 import br.com.senai.clinica.exception.Response;
 import br.com.senai.clinica.repository.AnimalRepository;
 
-
 @RestController
 @RequestMapping("/animais")
 public class AnimalController {
@@ -27,7 +26,7 @@ public class AnimalController {
   @PostMapping
   public Response cadastrarAnimal(@RequestBody Animal animal) {
     repository.save(animal);
-    return new Response(201, "Animal cadastrado com sucesso!");
+    return new Response(201, "Animal cadastrado com sucesso!");//
   }
 
   @GetMapping
@@ -39,7 +38,8 @@ public class AnimalController {
   public Response atualizarAnimal(@PathVariable Long id, @RequestBody Animal novo) {
 
     if (!repository.existsById(id)) {
-      return new Response(404, "Animal não encontrado");//Quando tentar realiza por exemplo a atualização de um animal que não existe
+      return new Response(404, "Animal não encontrado");// Quando tentar realiza por exemplo a atualização de um animal
+                                                                        // que não existe
     }
 
     Animal animal = repository.findById(id).get();
@@ -53,35 +53,32 @@ public class AnimalController {
     }
 
     if (novo.getInfosMedicas() != null) {
-      animalAntigo.setRaca(entity.getRaca());
+      animal.setInfosMedicas(novo.getInfosMedicas());
     }
 
-    if (entity.getIdade() != null) {
-      animalAntigo.setIdade(entity.getIdade());
+    if (novo.getNome() != null) {
+      animal.setNome(novo.getNome());
     }
 
-    if (entity.getInfosMedicas() != null) {
-      animalAntigo.setInfosMedicas(entity.getInfosMedicas());
+    if (novo.getRaca() != null) {
+      animal.setRaca(novo.getRaca());
     }
 
-    if (entity.getStatus() != null) {
-      animalAntigo.setStatus(entity.getStatus());
+    if (novo.getStatus() != null) {
+      animal.setStatus(novo.getStatus());
     }
 
-    repository.save(animalAntigo);
+    repository.save(animal);
 
-    return new Response(200, "Animal atualizado!"); //resultado que foi concluído a ação
+    return new Response(200, "Animal atualizado com sucesso!");
   }
 
   @DeleteMapping("/{id}")
-  public Response deleteAnimal(@PathVariable Long id) {
-
+  public Response deletarAnimal(@PathVariable Long id) {
     if (!repository.existsById(id)) {
-      return new Response(404, "Animal não encontrado");//Quando tentar deletar um animal que não existe
+      return new Response(404, "Animal não encontrado!");
     }
-
     repository.deleteById(id);
-
-    return new Response(204, "Animal deletado com sucesso");// O bicho foi deletado com sucesso ma tal ato não tem um reorno portanto recebe como se fosse um "erro"
+    return new Response(204, "Animal deletado com sucesso!");
   }
 }

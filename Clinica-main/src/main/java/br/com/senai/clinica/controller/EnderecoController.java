@@ -8,13 +8,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.senai.clinica.entity.Endereco;
 import br.com.senai.clinica.exception.Response;
 import br.com.senai.clinica.repository.EnderecoRepository;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/enderecos")
@@ -24,74 +26,63 @@ public class EnderecoController {
   private EnderecoRepository repository;
 
   @PostMapping
-  public Endereco criarEndereco(@RequestBody Endereco entity) {
-    return repository.save(entity);
+  public Endereco cadastrarEndereco(@Valid @RequestBody Endereco endereco) {
+    repository.save(endereco);
+    return new Response(201, "Endereço cadastrado(a) com sucesso!");
   }
 
   @GetMapping
-  public List<Endereco> listarTodos() {
+  public List<Endereco> getAllEnderecos() {
     return repository.findAll();
   }
 
   @PutMapping("/{id}")
-  public Response atualizar(@PathVariable Long id, @RequestBody Endereco entity) {
-
+  public Response atualizarEndereco(@PathVariable Long id, @RequestBody Endereco novo) {
     if (!repository.existsById(id)) {
-      return new Response(404, "Endereço não encontrado");
+      return new Response(404, "Endereço não encontrado!");
     }
 
-    Endereco enderecoAntigo = repository.findById(id).get();
+    Endereco endereco = repository.findById(id).get();
 
-    if (entity.getCep() != null) {
-      enderecoAntigo.setCep(entity.getCep());
+    if (novo.getCep() != null) {
+      endereco.setCep(novo.getCep());
+    }
+    if (novo.getLogradouro() != null) {
+      endereco.setLogradouro(novo.getLogradouro());
+    }
+    if (novo.getLocalidade() != null) {
+      endereco.setLocalidade(novo.getLocalidade());
+    }
+    if (novo.getUf() != null) {
+      endereco.setUf(novo.getUf());
+    }
+    if (novo.getBairro() != null) {
+      endereco.setBairro(novo.getBairro());
+    }
+    if (novo.getNumero() != null) {
+      endereco.setNumero(novo.getNumero());
+    }
+    if (novo.getComplemento() != null) {
+      endereco.setComplemento(novo.getComplemento());
+    }
+    if (novo.getReferencia() != null) {
+      endereco.setReferencia(novo.getReferencia());
+    }
+    if (novo.getPrincipal() != null) {
+      endereco.setPrincipal(novo.getPrincipal());
     }
 
-    if (entity.getLogradouro() != null) {
-      enderecoAntigo.setLogradouro(entity.getLogradouro());
-    }
+    repository.save(endereco);
 
-    if (entity.getLocalidade() != null) {
-      enderecoAntigo.setLocalidade(entity.getLocalidade());
-    }
-
-    if (entity.getUf() != null) {
-      enderecoAntigo.setUf(entity.getUf());
-    }
-
-    if (entity.getBairro() != null) {
-      enderecoAntigo.setBairro(entity.getBairro());
-    }
-
-    if (entity.getNumero() != null) {
-      enderecoAntigo.setNumero(entity.getNumero());
-    }
-
-    if (entity.getComplemento() != null) {
-      enderecoAntigo.setComplemento(entity.getComplemento());
-    }
-
-    if (entity.getReferencia() != null) {
-      enderecoAntigo.setReferencia(entity.getReferencia());
-    }
-
-    if (entity.getPrincipal() != null) {
-      enderecoAntigo.setPrincipal(entity.getPrincipal());
-    }
-
-    repository.save(enderecoAntigo);
-
-    return new Response(200, "Endereço atualizado!");
+    return new Response(200, "Endereço atualizado com sucesso!");
   }
 
   @DeleteMapping("/{id}")
-  public Response deletar(@PathVariable Long id) {
-
+  public Response deletarEndereco(@PathVariable Long id) {
     if (!repository.existsById(id)) {
-      return new Response(404, "Endereço não encontrado");
+      return new Response(404, "Endereço não encontrado!");
     }
-
     repository.deleteById(id);
-
-    return new Response(204, "Endereço deletado com sucesso");
+    return new Response(204, "Endereço deletado com sucesso!");
   }
 }

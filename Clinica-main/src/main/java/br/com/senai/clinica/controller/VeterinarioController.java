@@ -8,63 +8,66 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.senai.clinica.entity.Veterinario;
 import br.com.senai.clinica.exception.Response;
 import br.com.senai.clinica.repository.VeterinarioRepository;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
+import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/veterinario")
+@RequestMapping("/veterinarios")
 public class VeterinarioController {
 
   @Autowired
   private VeterinarioRepository repository;
 
   @PostMapping
-  public Veterinario criarVeterinario(@RequestBody Veterinario entity) {
-    return repository.save(entity);
+  public Response cadastrarVeterinario(@Valid @RequestBody Veterinario veterinario) {
+    repository.save(veterinario);
+    return new Response(201, "Veterinario(a) cadastrado com sucesso!");
   }
 
   @GetMapping
-  public List<Veterinario> listarTodos() {
+  public List<Veterinario> getALLVeterinarios() {
     return repository.findAll();
   }
 
   @PutMapping("/{id}")
-  public Response atualizar(@PathVariable Long id, @RequestBody Veterinario entity) {
+  public Response atualizarVeterinario(@PathVariable Long id, @RequestBody Veterinario novo) {
 
     if (!repository.existsById(id)) {
       return new Response(404, "Veterinário não encontrado");
     }
 
-    Veterinario veterinarioAntigo = repository.findById(id).get();
+    Veterinario veterinario = repository.findById(id).get();
 
-    if (entity.getNome() != null) {
-      veterinarioAntigo.setNome(entity.getNome());
+    if (novo.getNome() != null) {
+      veterinario.setNome(novo.getNome());
     }
 
-    if (entity.getCrmv() != null) {
-      veterinarioAntigo.setCrmv(entity.getCrmv());
+    if (novo.getCrmv() != null) {
+      veterinario.setCrmv(novo.getCrmv());
     }
 
-    if (entity.getEspecializacao() != null) {
-      veterinarioAntigo.setEspecializacao(entity.getEspecializacao());
+    if (novo.getEspecializacao() != null) {
+      veterinario.setEspecializacao(novo.getEspecializacao());
     }
 
-    if (entity.getJornada() != null) {
-      veterinarioAntigo.setJornada(entity.getJornada());
+    if (novo.getJornada() != null) {
+      veterinario.setJornada(novo.getJornada());
     }
 
-    repository.save(veterinarioAntigo);
+    repository.save(veterinario);
 
     return new Response(200, "Veterinário atualizado!");
   }
 
   @DeleteMapping("/{id}")
-  public Response deletar(@PathVariable Long id) {
+  public Response deletarVeterinario(@PathVariable Long id) {
 
     if (!repository.existsById(id)) {
       return new Response(404, "Veterinário não encontrado");

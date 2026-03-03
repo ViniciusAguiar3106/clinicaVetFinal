@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
+
 
 @Entity
 @Table(name = "veterinario_consulta")
@@ -24,8 +24,17 @@ public class VeterinarioConsulta {
     @JoinColumn(name = "id_consulta")
     private Consulta consulta;
 
-    @NotBlank
     private String obsMedicas;
+
+    public VeterinarioConsulta() {
+    }
+
+    public VeterinarioConsulta(Long id, Veterinario veterinario, Consulta consulta, String obsMedicas) {
+        this.id = id;
+        this.veterinario = veterinario;
+        this.consulta = consulta;
+        this.obsMedicas = obsMedicas;
+    }
 
     public Long getId() {
         return id;
@@ -58,5 +67,4 @@ public class VeterinarioConsulta {
     public void setObsMedicas(String obsMedicas) {
         this.obsMedicas = obsMedicas;
     }
-
 }

@@ -3,7 +3,6 @@ package br.com.senai.clinica.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.query.JpqlQueryBuilder.Entity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping
+@RequestMapping("/donos")
 public class DonoController {
 
   @Autowired
@@ -28,19 +27,8 @@ public class DonoController {
 
   @PostMapping
   public Response cadastrarDono(@Valid @RequestBody Dono dono) {
-    boolean cpfJaExiste = repository.existsByCpf(dono.getCpf());
-  }
-
-  public Dono criaClinica(@RequestBody Dono entity) {
-    Dono saved = repository.save(entity);
-    return saved;
-  }
-
-  boolean cpfJaExiste = repository.existsByCpf(Entity.getCpf());
-  {
-    if (cpfJaExiste) {
-      return new Response(409, "Já existe um Cpf cadastrado");
-    }
+    repository.save(dono);
+    return new Response(201, "Dono(a) cadastrado(a) com sucesso!");
   }
 
   @GetMapping
@@ -49,34 +37,37 @@ public class DonoController {
   }
 
   @PutMapping("/{id}")
-  public Response Atualizar(@PathVariable Long id, @RequestBody Dono entity) {
+  public Response atualizarDono(@PathVariable Long id, @RequestBody Dono novo) {
 
     if (!repository.existsById(id)) {
-      return new Response(404, "Produto não encontrado");
+      return new Response(404, "Dono não encontrado(a)!");
     }
 
-    Dono clinicaAntigo = repository.findById(id).get();
+    Dono dono = repository.findById(id).get();
 
-    if (entity.getNome() != null) {
-      clinicaAntigo.setNome(entity.getNome());
+    if (novo.getNome() != null) {
+      dono.setNome(novo.getNome());
     }
 
-    if (entity.getCpf() != null) {
-      clinicaAntigo.setCpf(entity.getCpf());
+    if (novo.getCpf() != null) {
+      dono.setCpf(novo.getCpf());
+    }
+    if (novo.getStatus() != null) {
+      dono.setStatus(novo.getStatus());
     }
 
-    repository.save(clinicaAntigo);
+    repository.save(dono);
 
-    return new Response(200, "produto atualizado!");
+    return new Response(200, "Dono(a) atualizado com sucesso!");
 
   }
 
   @DeleteMapping("/{id}")
-  public Response deleteDono(@PathVariable Long id) {
+  public Response deletarDono(@PathVariable Long id) {
     if (!repository.existsById(id)) {
-      return new Response(404, "Responsável não encontrado");
+      return new Response(404, "Responsável não encontrado(a)!");
     }
     repository.deleteById(id);
-    return new Response(204, "Produto deletado com sucesso");
+    return new Response(204, "Dono(a) deletado(a) com sucesso!");
   }
 }

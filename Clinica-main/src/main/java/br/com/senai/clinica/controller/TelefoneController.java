@@ -15,38 +15,40 @@ import br.com.senai.clinica.entity.Telefone;
 import br.com.senai.clinica.exception.Response;
 import br.com.senai.clinica.repository.TelefoneRepository;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/telefone")
+@RequestMapping("/telefones")
 public class TelefoneController {
 
   @Autowired
   private TelefoneRepository repository;
 
   @PostMapping
-  public Telefone criarTelefone(@RequestBody Telefone entity) {
-    return repository.save(entity);
+  public Telefone cadastrarTelefone(@Valid @RequestBody Telefone telefone) {
+    repository.save(telefone);
+    return new Response(201, "Telefone cadastrado com sucesso!");
   }
 
   @GetMapping
-  public List<Telefone> listarTodos() {
+  public List<Telefone> getALLTelefones() {
     return repository.findAll();
   }
 
   @PutMapping("/{id}")
-  public Response atualizar(@PathVariable Long id, @RequestBody Telefone entity) {
+  public Response atualizarTelefone(@PathVariable Long id, @RequestBody Telefone novo) {
 
     if (!repository.existsById(id)) {
       return new Response(404, "Telefone não encontrado");
     }
 
-    Telefone telefoneAntigo = repository.findById(id).get();
+    Telefone telefone = repository.findById(id).get();
 
-    if (entity.getNumero() != null) {
-      telefoneAntigo.setNumero(entity.getNumero());
+    if (novo.getNumero() != null) {
+      telefone.setNumero(novo.getNumero());
     }
 
-    repository.save(telefoneAntigo);
+    repository.save(telefone);
 
     return new Response(200, "Telefone atualizado!");
   }

@@ -1,10 +1,13 @@
 package br.com.senai.clinica.entity;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -12,28 +15,36 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 public class Veterinario {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotBlank(message = "É necessário informar seu nome")
-    @Size(max = 80, min = 3, message = "Minimo 3 e máximo 80")
+    @NotBlank(message = "É necessário informar um nome!")
+    @Size(min = 3, max = 80, message = "Mínimo de 3 e máximo de 80 caracteres para o nome!")
     private String nome;
 
-    @NotBlank(message = "Informe o seu cpf sem pontos")
-    @Size(min = 13, max = 13, message = "Não informe traços e pontos")
+    @NotBlank(message = "É necessário informar o CRMV!")
+    @Size(min = 13, max = 13, message = "Informe 13 caracteres para o CRMV, sem traços!")
     private String crmv;
 
-    @NotBlank(message = "Informe o seu CEP")
-    @Size(min = 4, max = 80, message = "Não informe traços e pontos")
+    @NotBlank(message = "É necessário informar a especialização!")
+    @Size(min = 3, max = 80, message = "Mínimo de 3 e máximo de 80 caracteres para a especialização!")
     private String especializacao;
 
-    @Column(unique = true)
-
-    @NotNull
-    @Positive
+    @NotNull(message = "É necessário informar a jornada, em horas!")
+    @Positive(message = "É necessário informar um valor inteiro, maior do que zero!")
     private Integer jornada;
+
+    @OneToMany(mappedBy = "veterinario")
+    private List<VeterinarioConsulta> veterinariosConsulta;
+
+    public Veterinario(Long id, String nome, String crmv, String especializacao, Integer jornada) {
+        this.id = id;
+        this.nome = nome;
+        this.crmv = crmv;
+        this.especializacao = especializacao;
+        this.jornada = jornada;
+    }
 
     public Long getId() {
         return id;
@@ -74,4 +85,13 @@ public class Veterinario {
     public void setJornada(Integer jornada) {
         this.jornada = jornada;
     }
+
+    public List<VeterinarioConsulta> getVeterinariosConsulta() {
+        return veterinariosConsulta;
+    }
+
+    public void setVeterinariosConsulta(List<VeterinarioConsulta> veterinariosConsulta) {
+        this.veterinariosConsulta = veterinariosConsulta;
+    }
+
 }
